@@ -15,6 +15,7 @@ export default class RuleGroup extends React.Component {
     render() {
         const { combinator, rules, schema: {combinators, controls, onRuleRemove, isRuleGroup, getLevel, classNames } } = this.props;
         const level = getLevel(this.props.id);
+         console.log('level', level);
           return (
             <div className={`ruleGroup ${classNames.ruleGroup}`}>
                 {
