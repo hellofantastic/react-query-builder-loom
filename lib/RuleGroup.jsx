@@ -1,23 +1,31 @@
 import React from 'react';
 import Rule from './Rule';
-
+ import update from 'immutability-helper';
 export default class RuleGroup extends React.Component {
     static get defaultProps() {
         return {
             id: null,
-            parentId: null,
             rules: [],
             combinator: 'and',
             schema: {},
+            level: 0
         };
     }
-
+    level = 0;
+    componentDidUpdate = () =>{
+        this.level = 1;
+    }
     render() {
+        console.log("props ",this.props);
         const { combinator, rules, schema: {combinators, controls, onRuleRemove, isRuleGroup, getLevel, classNames } } = this.props;
-        const level = getLevel(this.props.id);
-         console.log('level', level);
+        console.log("props id ",this.props.id);
+        console.log("rules ",rules);
+        let level = this.level;
+        console.log("level",level);
+        
           return (
-            <div className={`ruleGroup ${classNames.ruleGroup}`}>
+           
+                <div className={`ruleGroup ${classNames.ruleGroup}`}>
                 {
                     React.createElement(controls.combinatorSelector,
                         {
@@ -26,52 +34,33 @@ export default class RuleGroup extends React.Component {
                             className: `ruleGroup-combinators ${classNames.combinators}`,
                             handleOnChange: this.onCombinatorChange, 
                             rules: rules, 
-                            level: level
+                           
                         }
                     )
                 }
+                
+                
                 {
-                    React.createElement(controls.addRuleAction,
-                        {
-                            label: '+Rule',
-                            className: `ruleGroup-addRule ${classNames.addRule}`,
-                            handleOnClick: this.addRule, 
-                            rules: rules, 
-                            level: level
-                        }
-                    )
-                }
-                {
-                    React.createElement(controls.addGroupAction,
-                        {
-                            label: '+Group',
-                            className: `ruleGroup-addGroup ${classNames.addGroup}`,
-                            handleOnClick: this.addGroup, 
-                            rules: rules, 
-                            level: level
-                        }
-                    )
-                }
-                {
-                    this.hasParentGroup() ?
+                   
                         React.createElement(controls.removeGroupAction,
                             {
                                 label: 'x',
                                 className: `ruleGroup-remove ${classNames.removeGroup}`,
                                 handleOnClick: this.removeGroup, 
                                 rules: rules, 
-                                level: level
+                               
                             }
-                        ) : null
+                        ) 
                 }
                  {
                      rules.map(r=> {
+                         console.log("R",r);
                          return (
                              isRuleGroup(r)
                                  ? <RuleGroup key={r.id}
                                               id={r.id}
                                               schema={this.props.schema}
-                                              parentId={this.props.id}
+                                              
                                               combinator={r.combinator}
                                               rules={r.rules}/>
                                  : <Rule key={r.id}
@@ -85,8 +74,24 @@ export default class RuleGroup extends React.Component {
                          );
                      })
                  }
-            </div>
+                 {
+                    React.createElement(controls.addRuleAction,
+                        {
+                            label: '+Rule',
+                            className: `ruleGroup-addRule ${classNames.addRule}`,
+                            handleOnClick: this.addRule, 
+                            rules: rules, 
+                        
+                        }
+                    )
+                }
+                 
+            </div> 
+            
+             
         );
+    
+       
     }
 
     hasParentGroup() {
@@ -115,7 +120,12 @@ export default class RuleGroup extends React.Component {
 
         const {createRuleGroup, onGroupAdd} = this.props.schema;
         const newGroup = createRuleGroup();
-        onGroupAdd(newGroup, this.props.id)
+        console.log("new",newGroup);
+        const id = update(this.props.id,{
+            id: {$set: newGroup.id}
+        })
+        
+        onGroupAdd(newGroup, newGroup.id)
     }
 
     removeGroup = (event) => {

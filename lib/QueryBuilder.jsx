@@ -2,7 +2,7 @@ import uniqueId from 'uuid/v4';
 import cloneDeep from 'lodash/cloneDeep';
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import update from 'immutability-helper';
 import RuleGroup from './RuleGroup';
 import { ActionElement, ValueEditor, ValueSelector } from './controls/index';
 
@@ -22,7 +22,7 @@ export default class QueryBuilder extends React.Component {
 
     static get propTypes() {
         return {
-            query: PropTypes.object,
+            query: PropTypes.array,
             fields: PropTypes.array.isRequired,
             operators: PropTypes.array,
             combinators: PropTypes.array,
@@ -46,7 +46,7 @@ export default class QueryBuilder extends React.Component {
     constructor(...args) {
         super(...args);
         this.state = {
-            root: {},
+            root: [],
             schema: {},
         };
     }
@@ -118,7 +118,7 @@ export default class QueryBuilder extends React.Component {
         const classNames = Object.assign({}, QueryBuilder.defaultControlClassnames, controlClassnames);
         const controls = Object.assign({}, QueryBuilder.defaultControlElements, controlElements);
         this.setState({
-            root: this.getInitialQuery(),
+            root:this.getInitialQuery(),
             schema: {
                 fields,
                 operators,
@@ -139,11 +139,18 @@ export default class QueryBuilder extends React.Component {
                 getOperators: (...args)=>this.getOperators(...args),
             }
         });
-
+        
     }
 
     getInitialQuery() {
-        return this.props.query || this.createRuleGroup();
+        if(this.props.query )
+            return this.props.query;
+        else{
+            let group = this.createRuleGroup();
+            
+            return [group];
+           
+        }     
     }
 
     componentDidMount() {
@@ -151,17 +158,27 @@ export default class QueryBuilder extends React.Component {
     }
 
     render() {
-        const {root: {id, rules, combinator}, schema} = this.state;
-
+        const {root , schema} = this.state;
+       
+    console.log("heyrender",root);
         return (
             <div className={`queryBuilder ${schema.classNames.queryBuilder}`}>
-                <RuleGroup
-                    rules={rules}
-                    combinator={combinator}
+               { 
+                   root.map((r,index) => {
+                    console.log('r',r);
+                    return ( 
+                        <RuleGroup key={"r"+index}
+                    rules={r.rules}
+                    combinator={r.combinator}
                     schema={schema}
-                    id={id}
-                    parentId={null}
-                />
+                    id={r.id}
+                    />
+                    )
+                })
+              
+               }  
+               
+                <button onClick={this.addGroup}>Add Group</button>
             </div>
         );
     }
@@ -201,30 +218,66 @@ export default class QueryBuilder extends React.Component {
 
         return this.props.operators;
     }
-
+    searchID(nameKey, myArray){
+      for (var i=0; i < myArray.length; i++) {
+        //console.log("id",myArray[i].id, nameKey);
+          if (myArray[i].id === nameKey) {
+              return myArray[i];
+          }
+        }
+    }
     onRuleAdd(rule, parentId) {
-        const parent = this._findRule(parentId, this.state.root);
+        console.log("Rule add ",rule, parentId);
+        console.log("state roo", this.state.root);
+        //const parent = this._findRule(parentId, this.state.root);
+        const parent = this.searchID(parentId, this.state.root);
         parent.rules.push(rule);
 
         this.setState({root: this.state.root});
     }
+    addGroup = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-    onGroupAdd(group, parentId) {
-        const parent = this._findRule(parentId, this.state.root);
-        parent.rules.push(group);
+       
+        const newGroup = this.createRuleGroup();
+        console.log("new",newGroup);
+        
+        
+        this.onGroupAdd(newGroup, newGroup.id)
+    }
+    onGroupAdd(group,second) {
+        console.log(group);
+        if(!group)
+        group = this.createRuleGroup();
 
-        this.setState({root: this.state.root});
+       console.log('hey',this.state.root);
+       
+        this.setState({root: this.state.root.concat(group)});
+        this.forceUpdate();
     }
 
-    onPropChange(prop, value, ruleId) {
-        const rule = this._findRule(ruleId, this.state.root);
-        Object.assign(rule, {[prop]: value});
+    onPropChange(prop, value, ruleId, parentID) {
+        
+        if(!parentID)
+            parentID = ruleId;
 
+
+        console.log("propchange", prop,value,ruleId, parentID);
+         if(prop === 'combinator'){
+           let group =  this.searchID(parentID, this.state.root);  
+            Object.assign(group, {[prop]: value});
+        }else{ 
+        const rule = this._findRule(ruleId, this.state.root,parentID);
+        console.log("f rule",rule);
+        Object.assign(rule, {[prop]: value});
+        }
         this.setState({root: this.state.root});
     }
 
     onRuleRemove(ruleId, parentId) {
-        const parent = this._findRule(parentId, this.state.root);
+        console.log("RULE REMOVE ",ruleId, parentId);
+        const parent = this.searchID(parentId, this.state.root);
         const index = parent.rules.findIndex(x=>x.id === ruleId);
 
         parent.rules.splice(index, 1);
@@ -232,10 +285,11 @@ export default class QueryBuilder extends React.Component {
     }
 
     onGroupRemove(groupId, parentId) {
-        const parent = this._findRule(parentId, this.state.root);
-        const index = parent.rules.findIndex(x=>x.id === groupId);
+        console.log("GROUP REMOVE ",groupId, parentId);
+        const parent = this.searchID(groupId, this.state.root);
+        const index = this.state.root.findIndex(x=>x.id === groupId);
 
-        parent.rules.splice(index, 1);
+        this.state.root.splice(index, 1);
         this.setState({root: this.state.root});
     }
     
@@ -244,6 +298,7 @@ export default class QueryBuilder extends React.Component {
     }
     
     _getLevel(id, index, root) {
+        console.log(id, index, root);
         const {isRuleGroup} = this.state.schema;
         
         var foundAtIndex = -1;
@@ -263,21 +318,32 @@ export default class QueryBuilder extends React.Component {
        
     }
 
-    _findRule(id, parent) {
+    _findRule(id, root,parentID) {
         const {isRuleGroup} = this.state.schema;
+        console.log("pid",root, id, parentID);
 
-        if (parent.id === id) {
-            return parent;
-        }
+        if(!parentID)
+            parentID = id;
 
-        for (const rule of parent.rules) {
-            if (rule.id === id) {
+        console.log("parentID",parentID);    
+       
+        let group =  this.searchID(parentID, this.state.root);
+        console.log("Found ",group);
+       let rules = group.rules;
+       
+        for (const rule of rules) {
+            console.log("A rule", rule);
+            if (rule.id === id ) {
+                console.log("FOUNDIT", rule);
                 return rule;
             } else if (isRuleGroup(rule)) {
+                console.log("RULEGROUP");
                 const subRule = this._findRule(id, rule);
                 if (subRule) {
                     return subRule;
                 }
+            }else if(rule.combinator == true){
+                return rule;
             }
         }
 
@@ -291,6 +357,7 @@ export default class QueryBuilder extends React.Component {
         const {onQueryChange} = this.props;
         if (onQueryChange) {
             const query = cloneDeep(this.state.root);
+            console.log("notifychange",query);
             onQueryChange(query);
         }
     }

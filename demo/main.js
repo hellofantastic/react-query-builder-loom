@@ -18,7 +18,7 @@ class RootView extends React.Component {
     constructor() {
         super();
         this.state = {
-            query: {}
+            query: []
         };
     }
 

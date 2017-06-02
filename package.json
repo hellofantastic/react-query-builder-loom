@@ -55,6 +55,7 @@
     "webpack-merge": "^4.0.0"
   },
   "dependencies": {
+    "immutability-helper": "^2.2.2",
     "lodash": "^4.17.4",
     "prop-types": "^15.5.8",
     "react": "^15.5.4",

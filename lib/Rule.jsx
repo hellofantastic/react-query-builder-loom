@@ -14,7 +14,7 @@ export default class Rule extends React.Component {
 
     render() {
         const {field, operator, value, schema: {fields, controls, getOperators, getLevel, classNames}} = this.props;
-        var level = getLevel(this.props.id);
+      
         return (
             <div className={`rule ${classNames.rule}`}>
                 {
@@ -23,8 +23,8 @@ export default class Rule extends React.Component {
                             options: fields,
                             value: field,
                             className: `rule-fields ${classNames.fields}`,
-                            handleOnChange: this.onFieldChanged, 
-                            level: level
+                            handleOnChange: this.onFieldChanged 
+                           
                         }
                     )
                 }
@@ -35,8 +35,8 @@ export default class Rule extends React.Component {
                             options: getOperators(field),
                             value: operator,
                             className: `rule-operators ${classNames.operators}`,
-                            handleOnChange: this.onOperatorChanged, 
-                            level: level
+                            handleOnChange: this.onOperatorChanged
+                            
                         }
                     )
                 }
@@ -47,8 +47,8 @@ export default class Rule extends React.Component {
                             operator: operator,
                             value: value,
                             className: `rule-value ${classNames.value}`,
-                            handleOnChange: this.onValueChanged, 
-                            level: level
+                            handleOnChange: this.onValueChanged
+                            
                         }
                     )
                 }
@@ -57,8 +57,8 @@ export default class Rule extends React.Component {
                     {
                         label: 'x',
                         className: `rule-remove ${classNames.removeRule}`,
-                        handleOnClick: this.removeRule, 
-                        level: level
+                        handleOnClick: this.removeRule
+                    
                     })
                 }
             </div>
@@ -78,9 +78,10 @@ export default class Rule extends React.Component {
     }
 
     onElementChanged = (property, value) => {
-        const {id, schema: {onPropChange}} = this.props;
+        console.log("Element Changed",property,value);
+        const {id,parentId, schema: {onPropChange}} = this.props;
 
-        onPropChange(property, value, id);
+        onPropChange(property, value, id, parentId);
     }
 
     removeRule = (event) => {
