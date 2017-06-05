@@ -9,7 +9,7 @@ This component was inspired by prior work from:
 
 - [jQuery QueryBuilder](http://querybuilder.js.org/)
 - [Angular QueryBuilder](https://github.com/mfauveau/angular-query-builder)
-
+- [React QueryBuilder](https://github.com/sapientglobalmarkets/react-querybuilder/)
 
 ## Getting Started
 
