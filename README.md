@@ -5,7 +5,7 @@
 [![codecov.io](https://codecov.io/github/sapientglobalmarkets/react-querybuilder/coverage.svg?branch=master)](https://codecov.io/github/sapientglobalmarkets/react-querybuilder?branch=master)
 
 ## Credits
-This component was inspired by prior work from:
+This component was inspired by prior work from: (at some point this will be updated to reflect the change of direction)
 
 - [jQuery QueryBuilder](http://querybuilder.js.org/)
 - [Angular QueryBuilder](https://github.com/mfauveau/angular-query-builder)
