@@ -11759,7 +11759,7 @@ var QueryBuilder = function (_React$Component) {
                     });
                 }),
                 _react2.default.createElement(schema.controls.addGroupAction, {
-                    label: '+Group',
+                    label: '+',
                     className: 'ruleGroup-addRule ' + schema.classNames.addRule,
                     handleOnClick: this.addGroup
 
