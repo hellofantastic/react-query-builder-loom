@@ -181,7 +181,7 @@ export default class QueryBuilder extends React.Component {
                     React.createElement(schema.controls.addGroupAction,
                         {
                             label: '+',
-                            className: `ruleGroup-addRule ${schema.classNames.addRule}`,
+                            className: `ruleGroup-addGroup ${schema.classNames.addRule}`,
                             handleOnClick: this.addGroup, 
                            
                         
