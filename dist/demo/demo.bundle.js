@@ -11758,11 +11758,12 @@ var QueryBuilder = function (_React$Component) {
                         id: r.id
                     });
                 }),
-                _react2.default.createElement(
-                    'button',
-                    { onClick: this.addGroup },
-                    'Add Group'
-                )
+                _react2.default.createElement(schema.controls.addGroupAction, {
+                    label: '+Group',
+                    className: 'ruleGroup-addRule ' + schema.classNames.addRule,
+                    handleOnClick: this.addGroup
+
+                })
             );
         }
     }, {
