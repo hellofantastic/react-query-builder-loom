@@ -11663,10 +11663,8 @@ var QueryBuilder = function (_React$Component) {
         _this.addGroup = function (event) {
             event.preventDefault();
             event.stopPropagation();
-
             var newGroup = _this.createRuleGroup();
-            console.log("new", newGroup);
-
+            // console.log("new",newGroup); 
             _this.onGroupAdd(newGroup, newGroup.id);
         };
 
@@ -11745,12 +11743,10 @@ var QueryBuilder = function (_React$Component) {
                 schema = _state.schema;
 
 
-            console.log("heyrender", root);
             return _react2.default.createElement(
                 'div',
                 { className: 'queryBuilder ' + schema.classNames.queryBuilder },
                 root.map(function (r, index) {
-                    console.log('r', r);
                     return _react2.default.createElement(_RuleGroup2.default, { key: "r" + index,
                         rules: r.rules,
                         combinator: r.combinator,
@@ -11820,8 +11816,8 @@ var QueryBuilder = function (_React$Component) {
     }, {
         key: 'onRuleAdd',
         value: function onRuleAdd(rule, parentId) {
-            console.log("Rule add ", rule, parentId);
-            console.log("state roo", this.state.root);
+            // console.log("Rule add ",rule, parentId);
+            // console.log("state roo", this.state.root);
             //const parent = this._findRule(parentId, this.state.root);
             var parent = this.searchID(parentId, this.state.root);
             parent.rules.push(rule);
@@ -11831,10 +11827,10 @@ var QueryBuilder = function (_React$Component) {
     }, {
         key: 'onGroupAdd',
         value: function onGroupAdd(group, second) {
-            console.log(group);
+            // console.log(group);
             if (!group) group = this.createRuleGroup();
 
-            console.log('hey', this.state.root);
+            //console.log('hey',this.state.root);
 
             this.setState({ root: this.state.root.concat(group) });
             this.forceUpdate();
@@ -11845,13 +11841,13 @@ var QueryBuilder = function (_React$Component) {
 
             if (!parentID) parentID = ruleId;
 
-            console.log("propchange", prop, value, ruleId, parentID);
+            //console.log("propchange", prop,value,ruleId, parentID);
             if (prop === 'combinator') {
                 var group = this.searchID(parentID, this.state.root);
                 Object.assign(group, _defineProperty({}, prop, value));
             } else {
                 var rule = this._findRule(ruleId, this.state.root, parentID);
-                console.log("f rule", rule);
+                //console.log("find rule",rule);
                 Object.assign(rule, _defineProperty({}, prop, value));
             }
             this.setState({ root: this.state.root });
@@ -11859,7 +11855,7 @@ var QueryBuilder = function (_React$Component) {
     }, {
         key: 'onRuleRemove',
         value: function onRuleRemove(ruleId, parentId) {
-            console.log("RULE REMOVE ", ruleId, parentId);
+            //console.log("RULE REMOVE ",ruleId, parentId);
             var parent = this.searchID(parentId, this.state.root);
             var index = parent.rules.findIndex(function (x) {
                 return x.id === ruleId;
@@ -11871,7 +11867,7 @@ var QueryBuilder = function (_React$Component) {
     }, {
         key: 'onGroupRemove',
         value: function onGroupRemove(groupId, parentId) {
-            console.log("GROUP REMOVE ", groupId, parentId);
+            // console.log("GROUP REMOVE ",groupId, parentId);
             var parent = this.searchID(groupId, this.state.root);
             var index = this.state.root.findIndex(function (x) {
                 return x.id === groupId;
@@ -11912,15 +11908,14 @@ var QueryBuilder = function (_React$Component) {
         key: '_findRule',
         value: function _findRule(id, root, parentID) {
             var isRuleGroup = this.state.schema.isRuleGroup;
-
-            console.log("pid", root, id, parentID);
+            //console.log("pid",root, id, parentID);
 
             if (!parentID) parentID = id;
 
-            console.log("parentID", parentID);
+            // console.log("parentID",parentID);    
 
             var group = this.searchID(parentID, this.state.root);
-            console.log("Found ", group);
+            //console.log("Found ",group);
             var rules = group.rules;
 
             var _iteratorNormalCompletion = true;
@@ -11931,12 +11926,12 @@ var QueryBuilder = function (_React$Component) {
                 for (var _iterator = rules[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var rule = _step.value;
 
-                    console.log("A rule", rule);
+                    //console.log("A rule", rule);
                     if (rule.id === id) {
-                        console.log("FOUNDIT", rule);
+                        //console.log("FOUNDIT", rule);
                         return rule;
                     } else if (isRuleGroup(rule)) {
-                        console.log("RULEGROUP");
+                        //console.log("RULEGROUP");
                         var subRule = this._findRule(id, rule);
                         if (subRule) {
                             return subRule;
@@ -12236,7 +12231,7 @@ var RuleGroup = function (_React$Component) {
                 onGroupAdd = _this$props$schema2.onGroupAdd;
 
             var newGroup = createRuleGroup();
-            console.log("new", newGroup);
+
             var id = (0, _immutabilityHelper2.default)(_this.props.id, {
                 id: { $set: newGroup.id }
             });
@@ -12255,7 +12250,6 @@ var RuleGroup = function (_React$Component) {
         value: function render() {
             var _this2 = this;
 
-            console.log("props ", this.props);
             var _props = this.props,
                 combinator = _props.combinator,
                 rules = _props.rules,
@@ -12267,10 +12261,8 @@ var RuleGroup = function (_React$Component) {
                 getLevel = _props$schema.getLevel,
                 classNames = _props$schema.classNames;
 
-            console.log("props id ", this.props.id);
-            console.log("rules ", rules);
+
             var level = this.level;
-            console.log("level", level);
 
             return _react2.default.createElement(
                 'div',
@@ -12291,7 +12283,7 @@ var RuleGroup = function (_React$Component) {
 
                 }),
                 rules.map(function (r) {
-                    console.log("R", r);
+
                     return isRuleGroup(r) ? _react2.default.createElement(RuleGroup, { key: r.id,
                         id: r.id,
                         schema: _this2.props.schema,
