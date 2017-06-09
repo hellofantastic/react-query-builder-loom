@@ -1,6 +1,6 @@
 {
   "name": "react-query-builder-loom",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "The React <QueryBuilder /> component for constructing queries, forked from https://github.com/sapientglobalmarkets/react-querybuilder",
   "main": "dist/index.js",
   "repository": {
