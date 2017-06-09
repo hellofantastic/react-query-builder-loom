@@ -16,13 +16,11 @@ export default class RuleGroup extends React.Component {
         this.level = 1;
     }
     render() {
-        console.log("props ",this.props);
+      
         const { combinator, rules, schema: {combinators, controls, onRuleRemove, isRuleGroup, getLevel, classNames } } = this.props;
-        console.log("props id ",this.props.id);
-        console.log("rules ",rules);
+       
         let level = this.level;
-        console.log("level",level);
-        
+       
           return (
            
                 <div className={`ruleGroup ${classNames.ruleGroup}`}>
@@ -54,7 +52,7 @@ export default class RuleGroup extends React.Component {
                 }
                  {
                      rules.map(r=> {
-                         console.log("R",r);
+                      
                          return (
                              isRuleGroup(r)
                                  ? <RuleGroup key={r.id}
@@ -120,7 +118,7 @@ export default class RuleGroup extends React.Component {
 
         const {createRuleGroup, onGroupAdd} = this.props.schema;
         const newGroup = createRuleGroup();
-        console.log("new",newGroup);
+       
         const id = update(this.props.id,{
             id: {$set: newGroup.id}
         })

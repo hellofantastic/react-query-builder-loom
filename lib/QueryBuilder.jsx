@@ -160,12 +160,10 @@ export default class QueryBuilder extends React.Component {
     render() {
         const {root , schema} = this.state;
        
-    console.log("heyrender",root);
         return (
             <div className={`queryBuilder ${schema.classNames.queryBuilder}`}>
                { 
                    root.map((r,index) => {
-                    console.log('r',r);
                     return ( 
                         <RuleGroup key={"r"+index}
                     rules={r.rules}
@@ -237,8 +235,8 @@ export default class QueryBuilder extends React.Component {
         }
     }
     onRuleAdd(rule, parentId) {
-        console.log("Rule add ",rule, parentId);
-        console.log("state roo", this.state.root);
+       // console.log("Rule add ",rule, parentId);
+       // console.log("state roo", this.state.root);
         //const parent = this._findRule(parentId, this.state.root);
         const parent = this.searchID(parentId, this.state.root);
         parent.rules.push(rule);
@@ -248,20 +246,16 @@ export default class QueryBuilder extends React.Component {
     addGroup = (event) => {
         event.preventDefault();
         event.stopPropagation();
-
-       
         const newGroup = this.createRuleGroup();
-        console.log("new",newGroup);
-        
-        
+       // console.log("new",newGroup); 
         this.onGroupAdd(newGroup, newGroup.id)
     }
     onGroupAdd(group,second) {
-        console.log(group);
+       // console.log(group);
         if(!group)
         group = this.createRuleGroup();
 
-       console.log('hey',this.state.root);
+       //console.log('hey',this.state.root);
        
         this.setState({root: this.state.root.concat(group)});
         this.forceUpdate();
@@ -273,20 +267,20 @@ export default class QueryBuilder extends React.Component {
             parentID = ruleId;
 
 
-        console.log("propchange", prop,value,ruleId, parentID);
+         //console.log("propchange", prop,value,ruleId, parentID);
          if(prop === 'combinator'){
            let group =  this.searchID(parentID, this.state.root);  
             Object.assign(group, {[prop]: value});
         }else{ 
         const rule = this._findRule(ruleId, this.state.root,parentID);
-        console.log("f rule",rule);
+        //console.log("find rule",rule);
         Object.assign(rule, {[prop]: value});
         }
         this.setState({root: this.state.root});
     }
 
     onRuleRemove(ruleId, parentId) {
-        console.log("RULE REMOVE ",ruleId, parentId);
+        //console.log("RULE REMOVE ",ruleId, parentId);
         const parent = this.searchID(parentId, this.state.root);
         const index = parent.rules.findIndex(x=>x.id === ruleId);
 
@@ -295,7 +289,7 @@ export default class QueryBuilder extends React.Component {
     }
 
     onGroupRemove(groupId, parentId) {
-        console.log("GROUP REMOVE ",groupId, parentId);
+       // console.log("GROUP REMOVE ",groupId, parentId);
         const parent = this.searchID(groupId, this.state.root);
         const index = this.state.root.findIndex(x=>x.id === groupId);
 
@@ -330,24 +324,24 @@ export default class QueryBuilder extends React.Component {
 
     _findRule(id, root,parentID) {
         const {isRuleGroup} = this.state.schema;
-        console.log("pid",root, id, parentID);
+        //console.log("pid",root, id, parentID);
 
         if(!parentID)
             parentID = id;
 
-        console.log("parentID",parentID);    
+       // console.log("parentID",parentID);    
        
         let group =  this.searchID(parentID, this.state.root);
-        console.log("Found ",group);
+        //console.log("Found ",group);
        let rules = group.rules;
        
         for (const rule of rules) {
-            console.log("A rule", rule);
+            //console.log("A rule", rule);
             if (rule.id === id ) {
-                console.log("FOUNDIT", rule);
+                //console.log("FOUNDIT", rule);
                 return rule;
             } else if (isRuleGroup(rule)) {
-                console.log("RULEGROUP");
+                //console.log("RULEGROUP");
                 const subRule = this._findRule(id, rule);
                 if (subRule) {
                     return subRule;
