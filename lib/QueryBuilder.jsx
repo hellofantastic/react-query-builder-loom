@@ -210,8 +210,8 @@ export default class QueryBuilder extends React.Component {
     createRuleGroup() {
         return {
             id: `g-${uniqueId()}`,
-            rules: [],
             combinator: this.props.combinators[0].name,
+            rules: [],
         };
     }
 

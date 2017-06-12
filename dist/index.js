@@ -2049,8 +2049,8 @@ var QueryBuilder = function (_React$Component) {
         value: function createRuleGroup() {
             return {
                 id: 'g-' + (0, _v2.default)(),
-                rules: [],
-                combinator: this.props.combinators[0].name
+                combinator: this.props.combinators[0].name,
+                rules: []
             };
         }
     }, {
