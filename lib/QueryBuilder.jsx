@@ -178,7 +178,7 @@ export default class QueryBuilder extends React.Component {
                 {
                     React.createElement(schema.controls.addGroupAction,
                         {
-                            label: '+',
+                            label: '+Group',
                             className: `ruleGroup-addGroup ${schema.classNames.addRule}`,
                             handleOnClick: this.addGroup, 
                            
@@ -246,26 +246,30 @@ export default class QueryBuilder extends React.Component {
     addGroup = (event) => {
         event.preventDefault();
         event.stopPropagation();
+        
         const newGroup = this.createRuleGroup();
-       // console.log("new",newGroup); 
+        const starterRule = this.createRule();
+        
+        newGroup.rules.push(starterRule);
+        //console.log("new",newGroup); 
+
         this.onGroupAdd(newGroup, newGroup.id)
     }
     onGroupAdd(group,second) {
-       // console.log(group);
+        // console.log(group);
         if(!group)
         group = this.createRuleGroup();
 
-       //console.log('hey',this.state.root);
+        //console.log('hey',this.state.root);
        
         this.setState({root: this.state.root.concat(group)});
-        this.forceUpdate();
+       
     }
 
     onPropChange(prop, value, ruleId, parentID) {
         
         if(!parentID)
             parentID = ruleId;
-
 
          //console.log("propchange", prop,value,ruleId, parentID);
          if(prop === 'combinator'){

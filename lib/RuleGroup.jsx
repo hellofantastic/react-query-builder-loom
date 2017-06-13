@@ -50,6 +50,7 @@ export default class RuleGroup extends React.Component {
                             }
                         ) 
                 }
+                <div className="ruleWrapper">
                  {
                      rules.map(r=> {
                       
@@ -72,6 +73,7 @@ export default class RuleGroup extends React.Component {
                          );
                      })
                  }
+                 
                  {
                     React.createElement(controls.addRuleAction,
                         {
@@ -82,7 +84,8 @@ export default class RuleGroup extends React.Component {
                         
                         }
                     )
-                }
+                 }
+                 </div>
                  
             </div> 
             

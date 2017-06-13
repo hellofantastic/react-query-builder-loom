@@ -11663,8 +11663,13 @@ var QueryBuilder = function (_React$Component) {
         _this.addGroup = function (event) {
             event.preventDefault();
             event.stopPropagation();
+
             var newGroup = _this.createRuleGroup();
-            // console.log("new",newGroup); 
+            var starterRule = _this.createRule();
+
+            newGroup.rules.push(starterRule);
+            //console.log("new",newGroup); 
+
             _this.onGroupAdd(newGroup, newGroup.id);
         };
 
@@ -11755,7 +11760,7 @@ var QueryBuilder = function (_React$Component) {
                     });
                 }),
                 _react2.default.createElement(schema.controls.addGroupAction, {
-                    label: '+',
+                    label: '+Group',
                     className: 'ruleGroup-addGroup ' + schema.classNames.addRule,
                     handleOnClick: this.addGroup
 
@@ -11833,7 +11838,6 @@ var QueryBuilder = function (_React$Component) {
             //console.log('hey',this.state.root);
 
             this.setState({ root: this.state.root.concat(group) });
-            this.forceUpdate();
         }
     }, {
         key: 'onPropChange',
@@ -12282,29 +12286,33 @@ var RuleGroup = function (_React$Component) {
                     rules: rules
 
                 }),
-                rules.map(function (r) {
+                _react2.default.createElement(
+                    'div',
+                    { className: 'ruleWrapper' },
+                    rules.map(function (r) {
 
-                    return isRuleGroup(r) ? _react2.default.createElement(RuleGroup, { key: r.id,
-                        id: r.id,
-                        schema: _this2.props.schema,
+                        return isRuleGroup(r) ? _react2.default.createElement(RuleGroup, { key: r.id,
+                            id: r.id,
+                            schema: _this2.props.schema,
 
-                        combinator: r.combinator,
-                        rules: r.rules }) : _react2.default.createElement(_Rule2.default, { key: r.id,
-                        id: r.id,
-                        field: r.field,
-                        value: r.value,
-                        operator: r.operator,
-                        schema: _this2.props.schema,
-                        parentId: _this2.props.id,
-                        onRuleRemove: onRuleRemove });
-                }),
-                _react2.default.createElement(controls.addRuleAction, {
-                    label: '+Rule',
-                    className: 'ruleGroup-addRule ' + classNames.addRule,
-                    handleOnClick: this.addRule,
-                    rules: rules
+                            combinator: r.combinator,
+                            rules: r.rules }) : _react2.default.createElement(_Rule2.default, { key: r.id,
+                            id: r.id,
+                            field: r.field,
+                            value: r.value,
+                            operator: r.operator,
+                            schema: _this2.props.schema,
+                            parentId: _this2.props.id,
+                            onRuleRemove: onRuleRemove });
+                    }),
+                    _react2.default.createElement(controls.addRuleAction, {
+                        label: '+Rule',
+                        className: 'ruleGroup-addRule ' + classNames.addRule,
+                        handleOnClick: this.addRule,
+                        rules: rules
 
-                })
+                    })
+                )
             );
         }
     }, {
