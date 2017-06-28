@@ -50,7 +50,7 @@ export default class QueryBuilder extends React.Component {
             schema: {},
         };
 
-        this.addGroup = this._notifyQueryChange.bind(this,this.addGroup);
+        
     }
 
     static get defaultOperators() {

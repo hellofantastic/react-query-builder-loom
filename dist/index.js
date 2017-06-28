@@ -1940,7 +1940,6 @@ var QueryBuilder = function (_React$Component) {
             schema: {}
         };
 
-        _this.addGroup = _this._notifyQueryChange.bind(_this, _this.addGroup);
         return _this;
     }
 
