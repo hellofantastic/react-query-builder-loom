@@ -12270,21 +12270,25 @@ var RuleGroup = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { className: 'ruleGroup ' + classNames.ruleGroup },
-                _react2.default.createElement(controls.combinatorSelector, {
-                    options: combinators,
-                    value: combinator,
-                    className: 'ruleGroup-combinators ' + classNames.combinators,
-                    handleOnChange: this.onCombinatorChange,
-                    rules: rules
+                _react2.default.createElement(
+                    'span',
+                    { className: 'combinator' },
+                    _react2.default.createElement(controls.combinatorSelector, {
+                        options: combinators,
+                        value: combinator,
+                        className: 'ruleGroup-combinators ' + classNames.combinators,
+                        handleOnChange: this.onCombinatorChange,
+                        rules: rules
 
-                }),
-                _react2.default.createElement(controls.removeGroupAction, {
-                    label: 'x',
-                    className: 'ruleGroup-remove ' + classNames.removeGroup,
-                    handleOnClick: this.removeGroup,
-                    rules: rules
+                    }),
+                    _react2.default.createElement(controls.removeGroupAction, {
+                        label: 'x',
+                        className: 'ruleGroup-remove ' + classNames.removeGroup,
+                        handleOnClick: this.removeGroup,
+                        rules: rules
 
-                }),
+                    })
+                ),
                 _react2.default.createElement(
                     'div',
                     { className: 'ruleWrapper' },

@@ -24,6 +24,7 @@ export default class RuleGroup extends React.Component {
           return (
            
                 <div className={`ruleGroup ${classNames.ruleGroup}`}>
+                    <span className="combinator">
                 {
                     React.createElement(controls.combinatorSelector,
                         {
@@ -50,6 +51,7 @@ export default class RuleGroup extends React.Component {
                             }
                         ) 
                 }
+                </span>
                 <div className="ruleWrapper">
                  {
                      rules.map(r=> {
