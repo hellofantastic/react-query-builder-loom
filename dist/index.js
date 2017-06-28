@@ -1939,6 +1939,8 @@ var QueryBuilder = function (_React$Component) {
             root: [],
             schema: {}
         };
+
+        _this.addGroup = _this._notifyQueryChange.bind(_this, _this.addGroup);
         return _this;
     }
 
@@ -2096,8 +2098,6 @@ var QueryBuilder = function (_React$Component) {
         value: function onGroupAdd(group, second) {
             // console.log(group);
             if (!group) group = this.createRuleGroup();
-
-            //console.log('hey',this.state.root);
 
             this.setState({ root: this.state.root.concat(group) });
         }

@@ -49,6 +49,8 @@ export default class QueryBuilder extends React.Component {
             root: [],
             schema: {},
         };
+
+        this.addGroup = this._notifyQueryChange.bind(this,this.addGroup);
     }
 
     static get defaultOperators() {
@@ -259,9 +261,7 @@ export default class QueryBuilder extends React.Component {
         // console.log(group);
         if(!group)
         group = this.createRuleGroup();
-
-        //console.log('hey',this.state.root);
-       
+        
         this.setState({root: this.state.root.concat(group)});
        
     }
