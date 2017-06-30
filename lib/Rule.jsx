@@ -61,6 +61,15 @@ export default class Rule extends React.Component {
                     
                     })
                 }
+                {
+                    React.createElement(controls.duplicateRuleAction,
+                    {
+                        label: '+',
+                        className: `rule-duplicate ${classNames.duplicateRule}`,
+                        handleOnClick: this.duplicateRule
+                    
+                    })
+                }
             </div>
         );
     }
@@ -89,6 +98,12 @@ export default class Rule extends React.Component {
         event.stopPropagation();
 
         this.props.schema.onRuleRemove(this.props.id, this.props.parentId);
+    }
+    duplicateRule = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.props.schema.onDuplicateRule(this.props, this.props.parentId);
     }
 
 

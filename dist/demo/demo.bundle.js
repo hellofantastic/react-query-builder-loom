@@ -11684,6 +11684,7 @@ var QueryBuilder = function (_React$Component) {
     _createClass(QueryBuilder, [{
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(props) {
+            console.log("will recieve");
             if (this.props.query !== props.query) {
                 this.setState({ root: props.query });
             }
@@ -11693,6 +11694,7 @@ var QueryBuilder = function (_React$Component) {
         value: function componentWillMount() {
             var _this2 = this;
 
+            console.log("will mount");
             var _props = this.props,
                 fields = _props.fields,
                 operators = _props.operators,
@@ -11716,6 +11718,7 @@ var QueryBuilder = function (_React$Component) {
                     onRuleAdd: this._notifyQueryChange.bind(this, this.onRuleAdd),
                     onGroupAdd: this._notifyQueryChange.bind(this, this.onGroupAdd),
                     onRuleRemove: this._notifyQueryChange.bind(this, this.onRuleRemove),
+                    onDuplicateRule: this._notifyQueryChange.bind(this, this.onDuplicateRule),
                     onGroupRemove: this._notifyQueryChange.bind(this, this.onGroupRemove),
                     onPropChange: this._notifyQueryChange.bind(this, this.onPropChange),
                     getLevel: this.getLevel.bind(this),
@@ -11833,10 +11836,14 @@ var QueryBuilder = function (_React$Component) {
     }, {
         key: 'onGroupAdd',
         value: function onGroupAdd(group, second) {
+            var _this3 = this;
+
             // console.log(group);
             if (!group) group = this.createRuleGroup();
 
-            this.setState({ root: this.state.root.concat(group) });
+            this.setState({ root: this.state.root.concat(group) }, function () {
+                _this3._notifyQueryChange(null);
+            });
         }
     }, {
         key: 'onPropChange',
@@ -11868,6 +11875,21 @@ var QueryBuilder = function (_React$Component) {
             this.setState({ root: this.state.root });
         }
     }, {
+        key: 'onDuplicateRule',
+        value: function onDuplicateRule(rule, parentId) {
+
+            var parent = this.searchID(parentId, this.state.root);
+            var duplicateRule = {
+                id: 'r-' + (0, _v2.default)(),
+                field: rule.field,
+                value: rule.value,
+                operator: rule.operator
+            };
+            parent.rules.push(duplicateRule);
+
+            this.setState({ root: this.state.root });
+        }
+    }, {
         key: 'onGroupRemove',
         value: function onGroupRemove(groupId, parentId) {
             // console.log("GROUP REMOVE ",groupId, parentId);
@@ -11887,7 +11909,7 @@ var QueryBuilder = function (_React$Component) {
     }, {
         key: '_getLevel',
         value: function _getLevel(id, index, root) {
-            var _this3 = this;
+            var _this4 = this;
 
             console.log(id, index, root);
             var isRuleGroup = this.state.schema.isRuleGroup;
@@ -11901,7 +11923,7 @@ var QueryBuilder = function (_React$Component) {
                     if (foundAtIndex === -1) {
                         var indexForRule = index;
                         if (isRuleGroup(rule)) indexForRule++;
-                        foundAtIndex = _this3._getLevel(id, indexForRule, rule);
+                        foundAtIndex = _this4._getLevel(id, indexForRule, rule);
                     }
                 });
             }
@@ -12017,6 +12039,7 @@ var QueryBuilder = function (_React$Component) {
                 removeGroupAction: _index.ActionElement,
                 addRuleAction: _index.ActionElement,
                 removeRuleAction: _index.ActionElement,
+                duplicateRuleAction: _index.ActionElement,
                 combinatorSelector: _index.ValueSelector,
                 fieldSelector: _index.ValueSelector,
                 operatorSelector: _index.ValueSelector,
@@ -12089,6 +12112,11 @@ var Rule = function (_React$Component) {
             event.stopPropagation();
 
             _this.props.schema.onRuleRemove(_this.props.id, _this.props.parentId);
+        }, _this.duplicateRule = function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            _this.props.schema.onDuplicateRule(_this.props, _this.props.parentId);
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
@@ -12137,6 +12165,12 @@ var Rule = function (_React$Component) {
                     label: 'x',
                     className: 'rule-remove ' + classNames.removeRule,
                     handleOnClick: this.removeRule
+
+                }),
+                _react2.default.createElement(controls.duplicateRuleAction, {
+                    label: '+',
+                    className: 'rule-duplicate ' + classNames.duplicateRule,
+                    handleOnClick: this.duplicateRule
 
                 })
             );
@@ -12207,7 +12241,7 @@ var RuleGroup = function (_React$Component) {
             args[_key] = arguments[_key];
         }
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RuleGroup.__proto__ || Object.getPrototypeOf(RuleGroup)).call.apply(_ref, [this].concat(args))), _this), _this.level = 0, _this.componentDidUpdate = function () {
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RuleGroup.__proto__ || Object.getPrototypeOf(RuleGroup)).call.apply(_ref, [this].concat(args))), _this), _this.componentDidUpdate = function () {
             _this.level = 1;
         }, _this.onCombinatorChange = function (value) {
             var onPropChange = _this.props.schema.onPropChange;
@@ -12225,13 +12259,25 @@ var RuleGroup = function (_React$Component) {
 
             var newRule = createRule();
             onRuleAdd(newRule, _this.props.id);
-        }, _this.addGroup = function (event) {
+        }, _this.duplicateRule = function (event, rule) {
+            console.log("DUP fired");
             event.preventDefault();
             event.stopPropagation();
 
             var _this$props$schema2 = _this.props.schema,
-                createRuleGroup = _this$props$schema2.createRuleGroup,
-                onGroupAdd = _this$props$schema2.onGroupAdd;
+                createRule = _this$props$schema2.createRule,
+                onRuleAdd = _this$props$schema2.onRuleAdd;
+
+
+            var newRule = createRule();
+            //onRuleAdd(newRule, this.props.id)
+        }, _this.addGroup = function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            var _this$props$schema3 = _this.props.schema,
+                createRuleGroup = _this$props$schema3.createRuleGroup,
+                onGroupAdd = _this$props$schema3.onGroupAdd;
 
             var newGroup = createRuleGroup();
 
@@ -12260,6 +12306,7 @@ var RuleGroup = function (_React$Component) {
                 combinators = _props$schema.combinators,
                 controls = _props$schema.controls,
                 onRuleRemove = _props$schema.onRuleRemove,
+                onDuplicateRule = _props$schema.onDuplicateRule,
                 isRuleGroup = _props$schema.isRuleGroup,
                 getLevel = _props$schema.getLevel,
                 classNames = _props$schema.classNames;
@@ -12306,7 +12353,8 @@ var RuleGroup = function (_React$Component) {
                             operator: r.operator,
                             schema: _this2.props.schema,
                             parentId: _this2.props.id,
-                            onRuleRemove: onRuleRemove });
+                            onRuleRemove: onRuleRemove,
+                            onDuplicateRule: onDuplicateRule });
                     }),
                     _react2.default.createElement(controls.addRuleAction, {
                         label: '+Rule',

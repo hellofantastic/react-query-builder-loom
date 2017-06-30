@@ -102,6 +102,7 @@ export default class QueryBuilder extends React.Component {
             removeGroupAction: ActionElement,
             addRuleAction: ActionElement,
             removeRuleAction: ActionElement,
+            duplicateRuleAction: ActionElement,
             combinatorSelector: ValueSelector,
             fieldSelector: ValueSelector,
             operatorSelector: ValueSelector,
@@ -110,12 +111,14 @@ export default class QueryBuilder extends React.Component {
     }
     
     componentWillReceiveProps(props) {
+         console.log("will recieve");
       if (this.props.query !== props.query) {
         this.setState({ root: props.query });
       }
     }
   
     componentWillMount() {
+        console.log("will mount");
         const {fields, operators, combinators, controlElements, controlClassnames} = this.props;
         const classNames = Object.assign({}, QueryBuilder.defaultControlClassnames, controlClassnames);
         const controls = Object.assign({}, QueryBuilder.defaultControlElements, controlElements);
@@ -133,6 +136,7 @@ export default class QueryBuilder extends React.Component {
                 onRuleAdd: this._notifyQueryChange.bind(this, this.onRuleAdd),
                 onGroupAdd: this._notifyQueryChange.bind(this, this.onGroupAdd),
                 onRuleRemove: this._notifyQueryChange.bind(this, this.onRuleRemove),
+                onDuplicateRule: this._notifyQueryChange.bind(this, this.onDuplicateRule),
                 onGroupRemove: this._notifyQueryChange.bind(this, this.onGroupRemove),
                 onPropChange: this._notifyQueryChange.bind(this, this.onPropChange),
                 getLevel: this.getLevel.bind(this),
@@ -262,7 +266,7 @@ export default class QueryBuilder extends React.Component {
         if(!group)
         group = this.createRuleGroup();
         
-        this.setState({root: this.state.root.concat(group)});
+        this.setState({root: this.state.root.concat(group)}, ()=>{ this._notifyQueryChange(null)});
        
     }
 
@@ -289,6 +293,20 @@ export default class QueryBuilder extends React.Component {
         const index = parent.rules.findIndex(x=>x.id === ruleId);
 
         parent.rules.splice(index, 1);
+        this.setState({root: this.state.root});
+    }
+
+    onDuplicateRule(rule, parentId){
+      
+        const parent = this.searchID(parentId, this.state.root);
+        const duplicateRule= {
+            id: `r-${uniqueId()}`,
+            field: rule.field,
+            value: rule.value,
+            operator: rule.operator
+        }
+        parent.rules.push(duplicateRule);
+        
         this.setState({root: this.state.root});
     }
 

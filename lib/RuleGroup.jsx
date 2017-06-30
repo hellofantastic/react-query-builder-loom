@@ -11,13 +11,13 @@ export default class RuleGroup extends React.Component {
             level: 0
         };
     }
-    level = 0;
+  
     componentDidUpdate = () =>{
         this.level = 1;
     }
     render() {
       
-        const { combinator, rules, schema: {combinators, controls, onRuleRemove, isRuleGroup, getLevel, classNames } } = this.props;
+        const { combinator, rules, schema: {combinators, controls, onRuleRemove,onDuplicateRule, isRuleGroup, getLevel, classNames } } = this.props;
        
         let level = this.level;
        
@@ -51,6 +51,7 @@ export default class RuleGroup extends React.Component {
                             }
                         ) 
                 }
+                
                 </span>
                 <div className="ruleWrapper">
                  {
@@ -71,7 +72,8 @@ export default class RuleGroup extends React.Component {
                                          operator={r.operator}
                                          schema={this.props.schema}
                                          parentId={this.props.id}
-                                         onRuleRemove={onRuleRemove}/>
+                                         onRuleRemove={onRuleRemove}
+                                         onDuplicateRule={onDuplicateRule}/>
                          );
                      })
                  }
@@ -115,6 +117,16 @@ export default class RuleGroup extends React.Component {
 
         const newRule = createRule();
         onRuleAdd(newRule, this.props.id)
+    }
+    duplicateRule = (event, rule) => {
+        console.log("DUP fired");
+        event.preventDefault();
+        event.stopPropagation();
+
+        const {createRule, onRuleAdd} = this.props.schema;
+
+        const newRule = createRule();
+        //onRuleAdd(newRule, this.props.id)
     }
 
     addGroup = (event) => {
